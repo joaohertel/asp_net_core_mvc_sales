@@ -1,6 +1,9 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.AspNetCore.Mvc;
 using SalesMVC.Models;
+using SalesMVC.Models.ViewModels;
+
 
 namespace SalesMVC.Controllers
 {
@@ -19,6 +22,11 @@ namespace SalesMVC.Controllers
         }
 
         public IActionResult Privacy()
+        {
+            return View();
+        }
+
+        public IActionResult NovaPagina()
         {
             return View();
         }
