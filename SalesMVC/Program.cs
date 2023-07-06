@@ -8,6 +8,7 @@ using Pomelo.EntityFrameworkCore.MySql;
 var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("SalesMVCContext");
+
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 31));
 
 builder.Services.AddDbContext<SalesMVCContext>(
@@ -20,7 +21,7 @@ builder.Services.AddDbContext<SalesMVCContext>(
 
 
 // Add services to the container.
-builder.Services.AddControllersWithViews();
+builder.Services.AddControllersWithViews(); 
 
 var app = builder.Build();
 
