@@ -9,6 +9,14 @@ var builder = WebApplication.CreateBuilder(args);
 
 var connectionString = builder.Configuration.GetConnectionString("SalesMVCContext");
 
+string dbHost = Environment.GetEnvironmentVariable("databaseserverip");
+string dbUsername = Environment.GetEnvironmentVariable("dbusername");
+string dbPassword = Environment.GetEnvironmentVariable("dbuserpassword");
+
+
+connectionString = String.Format(connectionString, dbHost, dbUsername, dbPassword);
+
+
 var serverVersion = new MySqlServerVersion(new Version(8, 0, 31));
 
 builder.Services.AddDbContext<SalesMVCContext>(
@@ -21,7 +29,14 @@ builder.Services.AddDbContext<SalesMVCContext>(
 
 
 // Add services to the container.
-builder.Services.AddControllersWithViews(); 
+builder.Services.AddControllersWithViews();
+
+// seeding service definido na pasta data
+
+// registrar o servico de SeedingService
+builder.Services.AddScoped<SeedingService>();
+
+
 
 var app = builder.Build();
 
@@ -31,6 +46,21 @@ if (!app.Environment.IsDevelopment())
     app.UseExceptionHandler("/Home/Error");
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
+}
+else
+{
+    // call seeding service here
+    // testar se ja existem dados na base
+
+    using(var scope = app.Services.CreateScope())
+    {
+        var serviceScope = scope.ServiceProvider;
+
+        var seedService = serviceScope.GetService<SeedingService>();
+
+        seedService.Seed();
+    }
+
 }
 
 app.UseHttpsRedirection();
