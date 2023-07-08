@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using MySqlConnector;
 using SalesMVC.Data;
 using Pomelo.EntityFrameworkCore.MySql;
+using SalesMVC.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -35,7 +36,7 @@ builder.Services.AddControllersWithViews();
 
 // registrar o servico de SeedingService
 builder.Services.AddScoped<SeedingService>();
-
+builder.Services.AddScoped<SellerService>();
 
 
 var app = builder.Build();
