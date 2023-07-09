@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SalesMVC.Models;
 using SalesMVC.Services;
 
 namespace SalesMVC.Controllers
@@ -14,6 +15,21 @@ namespace SalesMVC.Controllers
         {
             var list = _sellerService.FindAll();
             return View(list);
+        }
+
+        public IActionResult Create()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult Create(Seller seller)
+        {
+            // chamar metodo para inserir dados no banco
+            _sellerService.AddSeller(seller);
+            
+            return RedirectToAction(nameof(Index));
         }
     }
 }
