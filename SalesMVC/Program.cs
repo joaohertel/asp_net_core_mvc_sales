@@ -37,6 +37,7 @@ builder.Services.AddControllersWithViews();
 // registrar o servico de SeedingService
 builder.Services.AddScoped<SeedingService>();
 builder.Services.AddScoped<SellerService>();
+builder.Services.AddScoped<DepartmentService>();
 
 
 var app = builder.Build();

@@ -39,3 +39,11 @@
         }
     }
 }
+/*
+ * add SellerFormViewModel
+ * add DepartmentService
+ * implement method findAll
+ * add DepartmentService
+ * inject DepartmentService into sellerService
+ * change seller CRUD form
+ */
