@@ -60,5 +60,22 @@ namespace SalesMVC.Controllers
             _sellerService.Delete(id);
             return RedirectToAction(nameof(Index));
         }
+
+        public IActionResult Details(int? id)
+        {
+            if( id == null )
+            {
+                return NotFound();
+            }
+            
+            Seller sr = _sellerService.FindById((int)id);
+
+            if( sr == null)
+            {
+                return NotFound();
+            }
+            
+            return View(sr);
+        }
     }
 }
