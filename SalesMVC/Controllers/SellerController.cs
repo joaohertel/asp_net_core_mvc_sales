@@ -1,4 +1,5 @@
-﻿using System.Diagnostics;
+﻿using System.Data.Common;
+using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.EntityFrameworkCore;
@@ -34,6 +35,12 @@ namespace SalesMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(Seller seller)
         {
+            if (!ModelState.IsValid)
+            {
+                List<Department> departments = _departmentService.FindAll();
+                SellerFormViewModel viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+                return View(viewModel);
+            }
             // chamar metodo para inserir dados no banco
             _sellerService.AddSeller(seller);
             
@@ -105,8 +112,14 @@ namespace SalesMVC.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(int? id, Seller seller)
         {
-            
-            if(!((int)id == seller.Id))
+			if (!ModelState.IsValid)
+			{
+				List<Department> departments = _departmentService.FindAll();
+				SellerFormViewModel viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+				return View(viewModel);
+			}
+
+			if (!((int)id == seller.Id))
             {
                 return RedirectToAction(nameof(Error), new { message = "IDs diferentes" });
             }
