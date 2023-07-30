@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SalesMVC.Data;
 using SalesMVC.Models;
+using SalesMVC.Services.Exceptions;
 
 namespace SalesMVC.Services
 {
@@ -36,6 +37,25 @@ namespace SalesMVC.Services
             {
                 _context.Seller.Remove(sr);
                 _context.SaveChanges();
+            }
+        }
+        public void UpdateSeller(Seller sr)
+        {
+            if(!_context.Seller.Any(x => x.Id == sr.Id))
+            {
+                throw new NotFoundException("Registro nao encontrado");
+            }
+
+            Console.WriteLine($"recebido vendedor {sr.Name}");
+
+            try
+            {
+                _context.Seller.Update(sr);
+                _context.SaveChanges();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                throw new DbConcurrencyException("Erro ao atualizar vendedor");
             }
         }
     }

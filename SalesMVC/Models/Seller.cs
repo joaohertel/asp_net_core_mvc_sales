@@ -37,5 +37,10 @@
             double total = Sales.Where(p => p.Date >= initial && p.Date <= final).Sum(p => p.Amount);
             return total;
         }
-    }
+
+		public override string ToString()
+		{
+			return $"Vendedor:{Name}, \n{Email}\n{BaseSalary}\n{BirthDate}\n{Department.Name}";
+		}
+	}
 }
