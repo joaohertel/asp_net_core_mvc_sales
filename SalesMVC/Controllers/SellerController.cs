@@ -18,43 +18,43 @@ namespace SalesMVC.Controllers
             _sellerService = sellerService;
             _departmentService = departmentService;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _sellerService.FindAll();
+            var list = await _sellerService.FindAllAsync();
             return View(list);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var departments = _departmentService.FindAll();
+            var departments = await _departmentService.FindAllAsync();
             var viewModel = new SellerFormViewModel { Departments = departments };
             return View(viewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(Seller seller)
+        public async Task<IActionResult> Create(Seller seller)
         {
             if (!ModelState.IsValid)
             {
-                List<Department> departments = _departmentService.FindAll();
+                List<Department> departments = await _departmentService.FindAllAsync();
                 SellerFormViewModel viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
                 return View(viewModel);
             }
             // chamar metodo para inserir dados no banco
-            _sellerService.AddSeller(seller);
+            await _sellerService.AddSellerAsync(seller);
             
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             if( id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Vendedor nao fornecido" });
             }
 
-            Seller sr = _sellerService.FindById(id.Value);
+            Seller? sr = await _sellerService.FindByIdAsync(id.Value);
             if( sr == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Vendedor nao encontrado" });
@@ -65,20 +65,20 @@ namespace SalesMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _sellerService.Delete(id);
+            await _sellerService.DeleteAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
             if( id == null )
             {
                 return RedirectToAction(nameof(Error), new { message = "Vendedor nao fornecido" });
             }
             
-            Seller sr = _sellerService.FindById((int)id);
+            Seller? sr = await _sellerService.FindByIdAsync((int)id);
 
             if( sr == null)
             {
@@ -88,20 +88,20 @@ namespace SalesMVC.Controllers
             return View(sr);
         }
 
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             if( id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "ID não fornecido" });
             }
 
-            Seller sr = _sellerService.FindById((int)id);
+            Seller? sr = await _sellerService.FindByIdAsync((int)id);
 
             if(sr == null){
                 return RedirectToAction(nameof(Error), new { message = "ID nao encontrado" });
             }
 
-            List<Department> departments = _departmentService.FindAll();
+            List<Department> departments = await _departmentService.FindAllAsync();
 
             SellerFormViewModel srViewModel = new SellerFormViewModel { Seller = sr, Departments = departments };
 
@@ -110,11 +110,11 @@ namespace SalesMVC.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(int? id, Seller seller)
+        public async Task<IActionResult> Edit(int? id, Seller seller)
         {
 			if (!ModelState.IsValid)
 			{
-				List<Department> departments = _departmentService.FindAll();
+				List<Department> departments = await _departmentService.FindAllAsync();
 				SellerFormViewModel viewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
 				return View(viewModel);
 			}
@@ -126,7 +126,7 @@ namespace SalesMVC.Controllers
 
             try
             {
-                _sellerService.UpdateSeller(seller);
+                await _sellerService.UpdateSellerAsync(seller);
 
                 return RedirectToAction(nameof(Index));
             }

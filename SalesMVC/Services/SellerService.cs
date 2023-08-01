@@ -14,34 +14,36 @@ namespace SalesMVC.Services
             _context = context;
         }
 
-        public List<Seller> FindAll()
+        public async Task<List<Seller>> FindAllAsync()
         {
-            return _context.Seller.ToList();
+            return await _context.Seller.ToListAsync();
         }
 
-        public void AddSeller(Seller seller)
+        public async Task AddSellerAsync(Seller seller)
         {
             _context.Add(seller);
-            _context.SaveChanges();
+			await _context.SaveChangesAsync();
         }
 
-        public Seller? FindById(int id)
+        public async Task<Seller?> FindByIdAsync(int id)
         {
-            return _context.Seller.Include(obj => obj.Department).FirstOrDefault(seller => seller.Id == id);
+            return await _context.Seller.Include(obj => obj.Department).FirstOrDefaultAsync(seller => seller.Id == id);
         }
 
-        public void Delete(int id)
+        public async Task DeleteAsync(int id)
         {
-            Seller? sr = FindById(id);
+            Seller? sr = await FindByIdAsync(id);
             if (sr != null)
             {
                 _context.Seller.Remove(sr);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
         }
-        public void UpdateSeller(Seller sr)
+        public async Task UpdateSellerAsync(Seller sr)
         {
-            if(!_context.Seller.Any(x => x.Id == sr.Id))
+            bool hasAny = _context.Seller.Any(x => x.Id == sr.Id);
+
+			if (!hasAny)
             {
                 throw new NotFoundException("Registro nao encontrado");
             }
@@ -51,7 +53,7 @@ namespace SalesMVC.Services
             try
             {
                 _context.Seller.Update(sr);
-                _context.SaveChanges();
+                await _context.SaveChangesAsync();
             }
             catch (DbUpdateConcurrencyException)
             {
