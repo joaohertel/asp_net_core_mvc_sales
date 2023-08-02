@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using SalesMVC.Models;
 using SalesMVC.Models.ViewModels;
 using SalesMVC.Services;
+using SalesMVC.Services.Exceptions;
 
 namespace SalesMVC.Controllers
 {
@@ -67,8 +68,15 @@ namespace SalesMVC.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Delete(int id)
         {
-            await _sellerService.DeleteAsync(id);
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                await _sellerService.DeleteAsync(id);
+                return RedirectToAction(nameof(Index));
+            }
+            catch(IntegrityException e)
+            {
+				return RedirectToAction(nameof(Error), new { message = "Registro possui outros registros associados" });
+			}
         }
 
         public async Task<IActionResult> Details(int? id)

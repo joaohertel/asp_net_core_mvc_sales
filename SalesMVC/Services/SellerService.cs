@@ -35,8 +35,14 @@ namespace SalesMVC.Services
             Seller? sr = await FindByIdAsync(id);
             if (sr != null)
             {
-                _context.Seller.Remove(sr);
-                await _context.SaveChangesAsync();
+                try {
+                    _context.Seller.Remove(sr);
+                    await _context.SaveChangesAsync();
+                }
+                catch(DbUpdateException e)
+                {
+                    throw new IntegrityException(e.Message);
+                }
             }
         }
         public async Task UpdateSellerAsync(Seller sr)
