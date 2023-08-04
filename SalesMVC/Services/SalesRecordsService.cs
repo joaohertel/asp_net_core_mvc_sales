@@ -35,6 +35,28 @@ namespace SalesMVC.Services
                 .OrderByDescending(obj => obj.Date)
                 .ToListAsync();
             // join com Department, Seller e ordenado por ordem decrescente
+        }       
+        public async Task<List<IGrouping<Department?, SalesRecord>>> FindByGroupDateAsync(DateTime? minDate, DateTime? maxDate)
+        {
+            var result = from obj in _context.SalesRecord select obj;
+            if (!minDate.HasValue)
+            {
+                // primeiro de janeiro do ano atual
+                minDate = new DateTime(DateTime.Now.Year, 1, 1);
+            }
+            if (!maxDate.HasValue)
+            {
+                maxDate = DateTime.Now;
+            }
+            result = result.Where(obj => obj.Date >= minDate && obj.Date <= maxDate);
+
+            return await result
+                .Include(obj => obj.Seller)
+                .Include(obj => obj.Seller.Department)
+                .OrderByDescending(obj => obj.Date)
+                .GroupBy(obj => obj.Seller.Department)
+                .ToListAsync();
+            // join com Department, Seller e ordenado por ordem decrescente
         }
 
     }
